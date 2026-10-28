@@ -31,3 +31,13 @@ El propietario autorizó expresamente un fork **público**, tras aclarar que Git
 Macfly se conserva como remoto `upstream`; `origin` se destina al fork. Solo se sube la rama `feature/account-bound-drafts`. No se abre una PR al original ni se publican paquetes en PyPI. Las protecciones actuales son comprobaciones locales; la autorización humana independiente queda pendiente.
 
 La creación del fork copia el historial público base en GitHub. Los pushes de mejoras se registran por commit y referencia remota comprobada. Si el SHA de la rama remota coincide con el HEAD local, ese avance está publicado; una etiqueta narrativa no sustituye esa comprobación.
+
+## Hito de instalación y revisión
+
+- `f6ba0f6`: el wheel conserva LICENSE y PROVENANCE dentro de su metadata instalable.
+- Suite completa: **121 pruebas simuladas pasan**. La corrección CRLF/LF de preparación de config está incluida.
+- Instalación final desde wheel en un entorno de ejecución separado del entorno dev, con **30 dependencias fijadas y verificadas por hash**. Importación confirmada desde site-packages de ese entorno, no desde el checkout editable.
+- Verificación de esa instalación con Outlook real: inicialización stdio, catálogo exacto de doce herramientas, recursos vacíos y enumeración de cuentas. Ninguna otra operación de correo.
+- Configuración Codex aplicada con autorización específica: nueva entrada outlook_classic, ms365 deshabilitado y las demás opciones conservadas. Copia previa fuera del checkout; no se edita ningún archivo de autenticación.
+- Primer intento de push rechazado por GitHub por falta del scope workflow. Ninguna rama de mejoras se actualizó. El propietario autorizó solicitar ese scope; el consentimiento se completa personalmente en el navegador.
+- El bundle portátil se construye con una lista explícita de archivos y un manifiesto SHA-256; incluye wheel y documentación, no todo el checkout ni su estado privado.

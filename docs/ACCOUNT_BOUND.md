@@ -105,6 +105,8 @@ La prueba `verify_mail_mcp.py --live` requiere Outlook real y se limita a herram
 
 Actualizar: revisar otra revisión de fuente, ejecutar pruebas simuladas, compilar un único wheel, regenerar SHA256SUMS y volver a ejecutar Install-Local. El entorno se sincroniza con el lock; el estado de aprobaciones se conserva. Reiniciar Codex. No actualizar desde PyPI ni seguir `main` automáticamente.
 
+Para preparar una distribución desde el checkout, usar un entorno de desarrollo separado con las dependencias `[dev]`, ejecutar las pruebas, construir con `uv build --wheel --out-dir dist` y guardar el SHA-256 del único wheel en `dist/SHA256SUMS.txt` (`hash  nombre_del_wheel`). Después ejecutar `python scripts/build_portable.py --output <archivo-nuevo.zip>`. El builder solo incluye archivos explícitamente permitidos y registra la revisión Git; no incluye `.git`, entornos, el rescate, config generada ni estado. No subir el bundle como release sin revisarlo y autorizar esa publicación separadamente.
+
 Retirar del cliente: `codex mcp remove outlook_classic`, reiniciar Codex y comprobar que ya no aparece. `ms365` queda deshabilitado; no se reactiva automáticamente. Se puede borrar la carpeta de instalación desde el Explorador una vez detenidos sus procesos, conservando el registro si hubo envíos inciertos. No se han añadido cuentas ni credenciales propias que revocar: la sesión de Outlook permanece como estaba. No borrar ni restaurar todo config.toml sobre cambios posteriores; quitar solo la entrada gestionada.
 
 El README/plugin/installadores anteriores se conservan como historia del proyecto base, pero no son la vía de instalación de esta rama. Las propuestas separables están en [UPSTREAM_PROPOSALS.md](UPSTREAM_PROPOSALS.md).
