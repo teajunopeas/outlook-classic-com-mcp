@@ -42,3 +42,11 @@ La creación del fork copia el historial público base en GitHub. Los pushes de 
 - Primer intento de push rechazado por GitHub por falta del scope workflow. Ninguna rama de mejoras se actualizó. El propietario autorizó solicitar ese scope; el consentimiento se completa personalmente en el navegador.
 - El bundle portátil se construye con una lista explícita de archivos y un manifiesto SHA-256; incluye wheel y documentación, no todo el checkout ni su estado privado.
 - `13902fd`: caducidad comprobada otra vez justo al registrar el intento de envío y reinstalación explícita del wheel al actualizar. Se prepara `0.5.0+accountbound.2` conservando el artefacto anterior; la nueva prueba eleva la suite a 122 casos simulados.
+
+## Push confirmado
+
+Tras completar personalmente el consentimiento workflow, se subió la rama `feature/account-bound-drafts` al fork propio. El primer push aceptado quedó en `be452257781c8a138bd5792cd5e999f01a1bca67`: 38 commits públicos de la base y 13 commits de la integración. `git ls-remote` confirmó el mismo SHA que el HEAD local. El intento anterior rechazado no había actualizado la rama.
+
+Este registro se guarda en un commit de documentación posterior y se sube por avance normal. No se modifica main, no se reescribe historia y no se abre PR. La rama de implementación se muestra como predeterminada en el fork para que el README y el instalador visibles correspondan a esta integración; main queda conservada como referencia upstream.
+
+La revisión de ejecución `0.5.0+accountbound.2` está instalada y su comprobación real limitada a herramientas/cuentas volvió a pasar. El bundle portátil de esa revisión se conserva como artefacto local con manifiesto y hashes; no se publican releases ni paquetes en esta fase. El diseño de autorización humana independiente sigue pendiente.
