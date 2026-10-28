@@ -2,6 +2,8 @@
 
 Esta rama conserva Macfly como única base y adapta unas pocas garantías del código aportado por el usuario. No usa Microsoft Graph, OAuth propio, Telegram, exportaciones del buzón, tareas programadas ni servicios. Outlook conserva su autenticación y sincronización normales. No desactivar sus avisos de acceso programático, antivirus ni políticas corporativas.
 
+**La autorización humana independiente es una tarea pendiente.** El protocolo local verifica contenido, caducidad y consumo, pero no puede demostrar quién escribió la frase SEND. La revisión humana actual depende del comportamiento del cliente/agente; no debe describirse como obligatoria por una barrera técnica independiente.
+
 ## Procedencia y revisión
 
 - Base: `https://github.com/macfly1202/outlook-classic-mcp`, commit `3295bba51b4719e947b501e7dbb809b8e3708572`.
