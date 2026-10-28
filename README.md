@@ -1,5 +1,10 @@
 # outlook-classic-mcp
 
+> **Local account-bound integration branch:** use [the installation and limits guide](docs/ACCOUNT_BOUND.md).
+> The upstream README below is retained for attribution/history. Its plugin, floating Git/PyPI
+> installers, broad tool catalog and security-setting advice do **not** describe this branch.
+> This branch exposes only 12 account-bound mail tools over stdio. Never disable Outlook protections.
+
 ![outlook-classic-mcp banner](src/public/outlook-classic-mcp-banner.png)
 
 A local **MCP (Model Context Protocol) server** that exposes the **classic
