@@ -59,7 +59,8 @@ def prepare(config: Path, root: Path):
     for key, value in data.get('mcp_servers', {}).items():
         assert checked['mcp_servers'][key] == ({**value, 'enabled': False} if key == 'ms365' else value)
     root.mkdir(parents=True, exist_ok=True)
-    (root / 'codex-config-proposed.toml').write_text(proposed, encoding='utf-8')
+    # Persist the exact hashed bytes: Windows text newline translation changes the hash.
+    (root / 'codex-config-proposed.toml').write_bytes(proposed.encode('utf-8'))
     metadata = {'config': str(config), 'original_sha256': hashlib.sha256(raw).hexdigest(),
                 'proposed_sha256': hashlib.sha256(proposed.encode('utf-8')).hexdigest(), 'disabled_ms365': disabled_ms365}
     (root / 'codex-config-review.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
