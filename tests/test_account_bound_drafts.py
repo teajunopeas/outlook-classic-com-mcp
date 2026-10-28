@@ -295,6 +295,19 @@ def test_disabled_send_and_wrong_phrase_never_send(env, monkeypatch):
     assert env.item.sends == 0
 
 
+def test_approval_expiring_during_final_hashing_cannot_send(env, monkeypatch):
+    approval = preview(env)
+    original = mail.snapshot
+    import outlook_mcp.approval as policy
+    def slow_verification(*args):
+        content = original(*args)
+        monkeypatch.setattr(policy.time, 'time', lambda: approval['expires_at_unix'] + 1)
+        return content
+    monkeypatch.setattr(mail, 'snapshot', slow_verification)
+    assert send(env, approval)['status'] == 'rejected'
+    assert env.item.sends == 0
+
+
 def test_expiry_revocation_and_single_claim_under_concurrency(env, monkeypatch):
     ledger = ApprovalLedger()
     approval = ledger.prepare(SMTP, 'other-id', {'body': 'test'})

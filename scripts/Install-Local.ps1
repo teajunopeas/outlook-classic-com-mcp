@@ -53,7 +53,7 @@ if (-not (Test-Path -LiteralPath $python)) {
 }
 & $UvPath pip sync --python $python --require-hashes (Join-Path $sourceRoot 'requirements.lock')
 if ($LASTEXITCODE -ne 0) { throw 'Locked dependency installation failed' }
-& $UvPath pip install --python $python --no-deps $wheel[0].FullName
+& $UvPath pip install --python $python --no-deps --reinstall-package outlook-classic-mcp $wheel[0].FullName
 if ($LASTEXITCODE -ne 0) { throw 'Reviewed package installation failed' }
 & $python -c "import outlook_mcp, pythoncom; print('Installed',outlook_mcp.__version__)"
 if ($LASTEXITCODE -ne 0) { throw 'Package import check failed' }

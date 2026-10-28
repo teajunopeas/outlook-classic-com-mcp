@@ -86,10 +86,12 @@ class ApprovalLedger:
 
     def mark(self, approval_id: str, state: str):
         with self.transaction() as db:
-            row = db.execute("SELECT state FROM approvals WHERE id=?", (approval_id,)).fetchone()
+            row = db.execute("SELECT state, expires FROM approvals WHERE id=?", (approval_id,)).fetchone()
             allowed = {'checking': {'attempted', 'rejected'}, 'attempted': {'submitted', 'uncertain'}}
             if not row or state not in allowed.get(row['state'], set()):
                 raise PermissionError("Invalid approval state transition")
+            if state == 'attempted' and time.time() >= row['expires']:
+                raise PermissionError("Approval expired during final content verification")
             db.execute("UPDATE approvals SET state=? WHERE id=?", (state, approval_id))
 
     def revoke(self, approval_id: str) -> dict:
