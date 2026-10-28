@@ -8,7 +8,9 @@ import re
 import pytest
 
 from outlook_mcp import ui as ui_mod
-from outlook_mcp.server import build_server
+from mcp.server.fastmcp import FastMCP
+from outlook_mcp.bridge import OutlookBridge
+from outlook_mcp.tools import register_all
 
 UI_TOOLS = {
     "outlook_list_mails": "ui://outlook/mail-list.html",
@@ -24,7 +26,10 @@ UI_TOOLS = {
 
 @pytest.fixture(scope="module")
 def server():
-    mcp, _bridge = build_server()
+    # Unit-test the retained upstream UI library, not the mail-only production server.
+    mcp = FastMCP('upstream-ui-unit-tests')
+    register_all(mcp, OutlookBridge())
+    ui_mod.register_ui(mcp)
     return mcp
 
 
