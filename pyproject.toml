@@ -43,6 +43,9 @@ Issues = "https://github.com/macfly1202/outlook-classic-mcp/issues"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools]
+license-files = ["LICENSE", "docs/PROVENANCE.md"]
+
 [tool.setuptools.package-data]
 "outlook_mcp.ui" = ["*.html"]
 
