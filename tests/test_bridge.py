@@ -57,6 +57,8 @@ def test_reconnects_and_retries_after_disconnect(bridge):
             raise _rpc_unavailable()
         return "recovered"
 
+    flaky.outlook_read_only = True
+
     assert asyncio.run(bridge.call(flaky)) == "recovered"
     # Retried once, against a freshly attached namespace.
     assert len(attempts) == 2
@@ -91,6 +93,8 @@ def test_error_surfaces_when_reattach_fails(bridge, monkeypatch):
 
     def dies(outlook, namespace):
         raise _rpc_unavailable()
+
+    dies.outlook_read_only = True
 
     with pytest.raises(RuntimeError, match="could not be relaunched"):
         asyncio.run(bridge.call(dies))

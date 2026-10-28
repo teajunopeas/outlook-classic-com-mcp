@@ -183,19 +183,17 @@ class OutlookBridge:
         return err
 
     def _execute(self, func: Callable[..., Any], args: tuple, kwargs: dict, holder: dict) -> None:
-        """Run one queued call, transparently reconnecting if Outlook died.
+        """Retry a disconnected call only when explicitly declared read-only.
 
-        If the call fails with a disconnect HRESULT (user closed Outlook,
-        it crashed, it was updated...), re-attach — relaunching
-        OUTLOOK.EXE if needed — and retry the call once. Disconnect means
-        the RPC channel broke because the process went away, so the
-        original call did not complete; a single retry is safe.
+        A broken RPC channel does not prove that a mutation did not execute.
+        Unknown callables and every write are single-attempt operations.
         """
         try:
             holder["value"] = func(self._outlook, self._namespace, *args, **kwargs)
             return
         except BaseException as exc:  # noqa: BLE001 - propagated to caller
-            if self._shutdown.is_set() or not is_disconnect_error(exc):
+            if (self._shutdown.is_set() or not is_disconnect_error(exc)
+                    or not getattr(func, "outlook_read_only", False)):
                 holder["error"] = exc
                 return
             logger.warning(
