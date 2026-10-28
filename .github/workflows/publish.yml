@@ -7,6 +7,8 @@ on:
 
 jobs:
   publish:
+    # Local integration has no publication authorization or confirmed rescue-code license.
+    if: vars.ENABLE_PYPI_PUBLICATION == 'true'
     runs-on: ubuntu-latest
     environment: main
     permissions:

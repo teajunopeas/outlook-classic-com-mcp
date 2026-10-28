@@ -7,3 +7,23 @@ __pycache__/
 build/
 dist/
 .ui-preview/
+
+# Local installation/review state must never enter this repository.
+.env
+.env.*
+!.env.example
+.codex/
+state/
+*.sqlite3
+*.sqlite3-*
+*.log
+*.pst
+*.ost
+*.eml
+*.msg
+codex-config-*.toml
+codex-config-review.json
+rescue-reference/
+json_lut*/
+runtime/
+bundle/
