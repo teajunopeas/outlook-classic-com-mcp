@@ -245,6 +245,13 @@ def test_attachment_content_changes_in_real_draft_are_detected(env):
     assert env.item.sends == 0
 
 
+def test_conversation_index_can_be_a_com_string(env):
+    env.item.ConversationIndex = 'stable-conversation-index'
+    approval = preview(env)
+    assert approval['snapshot']['origin']['conversation_index']
+    assert send(env, approval)['status'] == 'submitted'
+
+
 def test_non_file_attachment_and_unresolved_recipient_block_approval(env):
     env.item.Recipients[0].Resolved = False
     with pytest.raises(ValueError):

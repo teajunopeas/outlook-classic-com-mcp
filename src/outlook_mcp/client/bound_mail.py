@@ -138,6 +138,8 @@ def snapshot(item, smtp):
                                 "type": int(attachment.Type), "position": int(attachment.Position),
                                 "sha256": attachment_hash})
     def binary(value):
+        if isinstance(value, str):  # Outlook exposes ConversationIndex as a BSTR on some profiles.
+            return value.encode('utf-8').hex()
         return bytes(value).hex() if value else ''
     return {"account_smtp": actual.casefold(), "delegated_identity": str(item.SentOnBehalfOfName or ''),
             "entry_id": str(item.EntryID), "store_id": str(item.Parent.StoreID),
