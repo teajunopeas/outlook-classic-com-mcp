@@ -41,3 +41,4 @@ La creación del fork copia el historial público base en GitHub. Los pushes de 
 - Configuración Codex aplicada con autorización específica: nueva entrada outlook_classic, ms365 deshabilitado y las demás opciones conservadas. Copia previa fuera del checkout; no se edita ningún archivo de autenticación.
 - Primer intento de push rechazado por GitHub por falta del scope workflow. Ninguna rama de mejoras se actualizó. El propietario autorizó solicitar ese scope; el consentimiento se completa personalmente en el navegador.
 - El bundle portátil se construye con una lista explícita de archivos y un manifiesto SHA-256; incluye wheel y documentación, no todo el checkout ni su estado privado.
+- `13902fd`: caducidad comprobada otra vez justo al registrar el intento de envío y reinstalación explícita del wheel al actualizar. Se prepara `0.5.0+accountbound.2` conservando el artefacto anterior; la nueva prueba eleva la suite a 122 casos simulados.

@@ -7,7 +7,7 @@ Esta rama conserva Macfly como única base y adapta unas pocas garantías del c�
 ## Procedencia y revisión
 
 - Base: `https://github.com/macfly1202/outlook-classic-mcp`, commit `3295bba51b4719e947b501e7dbb809b8e3708572`.
-- Rama local: `feature/account-bound-drafts`; versión local `0.5.0+accountbound.1`.
+- Rama local: `feature/account-bound-drafts`; versión local `0.5.0+accountbound.2`.
 - Se conserva el historial y la licencia MIT original. Véase [PROVENANCE.md](PROVENANCE.md) para la adaptación del rescate y sus límites de licencia.
 - No se han fusionado ni instalado las variantes Hardened o Jwenture. La selección DeliveryStore se implementa sobre el backend existente; no se copian alternativas silenciosas de cuenta.
 - Python x64 `3.12.16`, uv `0.13.6` si hace falta descargarlo. `requirements.lock` fija las dependencias de ejecución y sus SHA-256. El paquete se instala desde el wheel local revisado, nunca desde el paquete homónimo de PyPI.
