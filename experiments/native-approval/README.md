@@ -1,6 +1,7 @@
 # Native send approval experiment
 
-Only stages 1 and 2 are in scope. This directory is independent of the Outlook
+Implementation is limited to stages 1 and 2; backend integration planning is
+documentation only. This directory is independent of the Outlook
 package. It never opens Outlook, reads attachments, or sends mail. All test
 content must be invented. Attachment strings are display labels, never paths to
 open. The hash identifies synthetic content; it is not an authorization token.
@@ -19,6 +20,12 @@ fresh-session restart also produced native cancellation for `restart-001`, with
 zero matching events and the total unchanged at one. The desktop app and remaining
 matrix are pending. Do not adapt the real sending backend on the strength of this
 partial validation.
+
+The source-based [retrospective](RETROSPECTIVE.md) maps the original stages to
+implementation and evidence. [Remaining simulator checks](CLOSURE_CHECKS.md)
+select the next nonredundant manual pair; its fixtures are prepared, not executed.
+The [integration plan](INTEGRATION_PLAN.md) proposes later components/contracts
+without changing the real backend. Stage 2 is not yet closed.
 
 The server deliberately does not implement approval itself: an execution event
 means the call reached the handler, not that a human approved it. A direct MCP

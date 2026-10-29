@@ -11,6 +11,32 @@ the complete matrix or unrestricted remembered-permission behavior across sessio
 The desktop application remains unverified and does not block CLI testing.
 No real sending integration is authorized by these results.
 
+## Source review and minimum closure continuation
+
+After milestone `4d8d65b`, a new repository review checked source, tests, commits,
+the execution log and evidence journal. The stable checkout remains clean at
+`2768ca8`, and `src`, production `tests`, installation scripts and project metadata
+have no experimental changes. See [RETROSPECTIVE.md](RETROSPECTIVE.md).
+
+The automatic simulator/launcher suite now passes **four** tests. The added
+fail-closed test uses mocked effective configurations for reviewer `auto_review`,
+approval policy `never`, and tool mode `auto`. Each is rejected before inventory
+or interactive client launch. No automatic reviewer was enabled in a live test.
+The prepared substantive-change fixtures pass the existing probe input schema
+with mail/COM imports blocked; validation dispatched no tool call.
+
+The baseline is still total one, solely `reject-001`, with zero `restart-001`.
+The next manual pair is `content-sequence-001` then `content-sequence-002`, changing
+revision, subject, body and attachment labels in consecutive valid calls.
+[CLOSURE_CHECKS.md](CLOSURE_CHECKS.md) defines native decisions, content/permission
+observations and expected counts. Both cases remain **prepared, not run** until
+the operator reports the dialogs and independent event checks are completed.
+
+The original per-call gate, remembered-permission restrictions and pending-dialog
+lifecycle/presentation requirements are not waived. Stage 1 is substantiated for
+CLI; stage 2 remains open. [INTEGRATION_PLAN.md](INTEGRATION_PLAN.md) is conditional
+planning only, not stage-3 implementation or permission for real mail.
+
 ## Current CLI observations and independent execution audit
 
 The operator explicitly reported that all three valid calls displayed native

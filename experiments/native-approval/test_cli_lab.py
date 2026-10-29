@@ -1,8 +1,12 @@
 """Ensure every launch path retains explicit human-review policy arguments."""
 
 import os
+import copy
+import tempfile
+import tomllib
 import unittest
-from unittest.mock import patch
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import cli_lab
 
@@ -27,6 +31,46 @@ class CliLaunchPolicyTests(unittest.TestCase):
             child = cli_lab.environment()
             self.assertEqual(child["CODEX_HOME"], str(cli_lab.HOME))
             self.assertEqual(os.environ["CODEX_HOME"], "stable-home")
+
+    def test_unsafe_effective_policy_stops_before_inventory_or_launch(self):
+        baseline = tomllib.loads((cli_lab.ROOT / "config.template.toml").read_text(encoding="utf-8"))
+        variants = []
+        for key, value in (("approvals_reviewer", "auto_review"), ("approval_policy", "never")):
+            changed = copy.deepcopy(baseline)
+            changed[key] = value
+            variants.append(changed)
+        changed = copy.deepcopy(baseline)
+        changed["mcp_servers"]["outlook_approval_probe"]["tools"]["outlook_send_draft"]["approval_mode"] = "auto"
+        variants.append(changed)
+        for effective_config in variants:
+            with self.subTest(effective_config=effective_config), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                (home / "config.toml").write_text(
+                    (cli_lab.ROOT / "config.template.toml").read_text(encoding="utf-8"), encoding="utf-8")
+                diagnostic = MagicMock()
+
+                def reply(method, params):
+                    if method == "initialize":
+                        return {"codexHome": str(home)}
+                    if method == "config/read":
+                        return {"config": effective_config}
+                    self.fail(f"Unexpected RPC after unsafe policy: {method}")
+
+                diagnostic.request.side_effect = reply
+                context = MagicMock()
+                context.__enter__.return_value = diagnostic
+                with patch.object(cli_lab, "HOME", home), \
+                     patch.object(cli_lab, "EVENTS", home / "events.jsonl"), \
+                     patch.object(cli_lab, "DiagnosticServer", return_value=context), \
+                     patch.object(cli_lab.subprocess, "run") as login_status, \
+                     patch.object(cli_lab.subprocess, "call") as launch:
+                    with self.assertRaises(RuntimeError):
+                        cli_lab.launch(False)
+                    self.assertEqual([call.args[0] for call in diagnostic.request.call_args_list],
+                                     ["initialize", "config/read"])
+                    launch.assert_not_called()
+                    login_status.assert_not_called()
+                    self.assertFalse((home / "events.jsonl").exists())
 
 
 if __name__ == "__main__":
