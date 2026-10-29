@@ -1,0 +1,19 @@
+# Candidate policy only. A parsed file is not evidence of an approval dialog.
+approval_policy = "on-request"
+approvals_reviewer = "user"
+sandbox_mode = "read-only"
+cli_auth_credentials_store = "file"
+
+[features]
+apps = false
+shell_tool = false
+hooks = false
+
+[mcp_servers.outlook_approval_probe]
+command = "__PYTHON__"
+args = ["__PROBE__", "--events", "__EVENTS__"]
+enabled_tools = ["outlook_send_draft"]
+default_tools_approval_mode = "prompt"
+
+[mcp_servers.outlook_approval_probe.tools.outlook_send_draft]
+approval_mode = "prompt"
