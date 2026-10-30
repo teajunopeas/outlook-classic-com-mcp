@@ -1,5 +1,7 @@
 # Native send approval experiment
 
+Current acceptance matrix and bounded test command: [CURRENT_STATUS.md](CURRENT_STATUS.md). This remains a partial milestone; native real sending and desktop approval are not validated.
+
 Implementation is limited to stages 1 and 2; backend integration planning is
 documentation only. This directory is independent of the Outlook
 package. It never opens Outlook, reads attachments, or sends mail. All test

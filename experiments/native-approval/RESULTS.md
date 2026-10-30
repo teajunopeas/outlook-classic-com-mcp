@@ -1,5 +1,7 @@
 # Experiment results — 2026-10-29
 
+See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the current acceptance matrix. Older pending statements below are historical checkpoints, superseded by later observations where explicitly recorded.
+
 ## Verdict
 
 **Partial CLI validation: native acceptance, cancellation, and a fresh approval
