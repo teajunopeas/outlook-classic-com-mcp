@@ -1,6 +1,7 @@
 # Remaining simulator checks
 
-Status: prepared, not executed or accepted. Do not repeat the completed baseline
+Status: the priority pair is now operator-observed and independently audited;
+the pending-close check remains unperformed at this checkpoint. Do not repeat the completed baseline
 acceptance, identical-argument cancellation, resume or restart cases. Only the
 operator can report native dialogs and make their decisions. A chat instruction
 to accept is not evidence of a native approval or an accepted operation.
@@ -77,3 +78,15 @@ a session. Document narrower evidence if a gate cannot be completed.
 
 No backend integration, real draft access, COM, sending, stable-install changes,
 push or PR is authorized. A remains the goal; B remains out of scope.
+
+## Recorded pair outcome
+
+The operator accepted the first native decision and cancelled the second, with
+no retries. The first execution ID is `99240151-10e4-435a-8b13-17395e5a12b3`.
+Independent checks confirm total two, first fixture exactly matched once, and
+zero second-case events. The first dialog offered Allow/Cancel with no visible
+remember option; attachment labels were visible, while the body was truncated
+in the dialog and complete in the pending call above. This is a presentation
+limitation, not proof of a full-body native card or all possible permission
+restrictions. See RESULTS for precise evidence boundaries. Do not rerun the pair.
+The new baseline for the pending-close test is **two** executions.

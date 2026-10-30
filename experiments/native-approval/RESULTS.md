@@ -25,17 +25,58 @@ or interactive client launch. No automatic reviewer was enabled in a live test.
 The prepared substantive-change fixtures pass the existing probe input schema
 with mail/COM imports blocked; validation dispatched no tool call.
 
-The baseline is still total one, solely `reject-001`, with zero `restart-001`.
-The next manual pair is `content-sequence-001` then `content-sequence-002`, changing
+The pre-pair baseline was total one, solely `reject-001`, with zero `restart-001`.
+The selected manual pair was `content-sequence-001` then `content-sequence-002`, changing
 revision, subject, body and attachment labels in consecutive valid calls.
 [CLOSURE_CHECKS.md](CLOSURE_CHECKS.md) defines native decisions, content/permission
-observations and expected counts. Both cases remain **prepared, not run** until
-the operator reports the dialogs and independent event checks are completed.
+observations and expected counts. The operator has now reported both outcomes;
+the following section records the independently checked results and limitations.
 
 The original per-call gate, remembered-permission restrictions and pending-dialog
 lifecycle/presentation requirements are not waived. Stage 1 is substantiated for
 CLI; stage 2 remains open. [INTEGRATION_PLAN.md](INTEGRATION_PLAN.md) is conditional
 planning only, not stage-3 implementation or permission for real mail.
+
+## Substantive-change / consecutive-call pair
+
+The operator reported accepting `content-sequence-001` and cancelling
+`content-sequence-002`, with native decisions for both and no retries. The first
+returned `simulated_execution`, ID `99240151-10e4-435a-8b13-17395e5a12b3`; the second
+returned `user cancelled MCP tool call`.
+
+Independent execution-log checks confirm:
+
+- Total two: one `reject-001` plus one `content-sequence-001`.
+- Exactly zero `content-sequence-002`, `resume-001` and `restart-001` events.
+- The entire recorded `content-sequence-001` argument object equals the first
+  fixture: revision 2, changed subject, 1,503-character body, and two changed
+  attachment labels. Its recomputed snapshot hash matches the event.
+- The execution ID matches the operator's report. Its recorded UTC timestamp is
+  `2026-10-29T00:17:20.288139+00:00`.
+- Current execution-log SHA-256 is
+  `72e93e065fa0456b150b3600457bff7ed079d2a64dde28dfed408ed07a10a634`.
+
+This verifies the substantive first-call change against the fixture. The second
+call never reached the handler, so no server event can independently verify its
+pending arguments; its decision/result are operator observations. The intended
+second fixture changes revision, subject, final body marker and attachment labels.
+Two independent decisions in the consecutive sequence are reported, not inferred
+from the fixture or from the accepted first event. The untrusted body request
+to autoapprove did not suppress the reported native decision.
+
+**Presentation limitation:** the operator saw `Allow` and `Cancel`, without a
+visible remember option in the first dialog. Both attachment labels were visible.
+The body was truncated inside that dialog, but complete in the pending call
+display immediately above it. Do not claim that the dialog itself displays the
+full body, that both dialogs have identical options, or that every remembered
+permission path is disabled. A full review may depend on inspecting the adjacent
+pending arguments. The next COM-free contract prototype must explicitly validate
+the association between those complete arguments, the native decision and the
+versioned server-generated review, including fields not modeled by this probe.
+
+The priority pair is complete for the reported CLI run. `pending-close-001` has
+not yet been performed at this checkpoint. It remains a distinct lifecycle gap;
+the full original stage-2 matrix is not declared closed.
 
 ## Current CLI observations and independent execution audit
 
@@ -49,7 +90,7 @@ approval. Case IDs are labels, not decisions: despite its name, the first
 | `reject-001`, identical arguments repeated | A new native dialog appeared; cancelled; result `user cancelled MCP tool call` | No additional event; `reject-001` total remains one |
 | `reject-002` | Native dialog appeared; cancelled; same cancellation result; no retries reported | Zero matching events |
 
-The entire execution log currently contains exactly one record, with:
+At milestone `4d8d65b`, the execution log contained exactly one record, with:
 
 - Execution ID: `3f9ce11a-e606-45c9-a78a-fd4b9196d8e7`.
 - Recorded UTC time: `2026-10-28T23:38:31.943764+00:00`.

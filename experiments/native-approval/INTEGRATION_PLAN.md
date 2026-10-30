@@ -73,6 +73,14 @@ version credential. A proposed review schema must carry actual snapshot revision
 and identifiers. The hash and reservation ID are content references, not proof
 that a person clicked approval; the verified client supplies that step.
 
+The current 1,503-character simulator case already exposed a limitation: the
+native card truncated the body while the pending call above showed it in full.
+The prototype must test that this complete pending display is unambiguously the
+call/version being approved and remains inspectable through the decision. Do not
+describe it as full-body display inside the card. If the actual review payload
+cannot be inspected and associated reliably, the presentation gate fails even
+when per-call prompting works.
+
 To preserve hash-only ledger storage, preview may return the complete snapshot
 without persisting plaintext in SQLite. On send, digest the submitted review and
 compare with the stored hash, then independently digest the freshly read real

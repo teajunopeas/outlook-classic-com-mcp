@@ -62,7 +62,7 @@ can be trusted, nor a delivery receipt.
 | Original stage and objective | Implemented | Automated evidence | Manual evidence | Pending / decision |
 | --- | --- | --- | --- | --- |
 | 1. Inventory/isolation: separate branch, Python, client configuration, state and mail-tool catalog | Sibling worktree and `experimental/native-send-approval`; fresh venv and `CODEX_HOME`; file-based login; explicit user/on-request/read-only flags; no shared daemon | Launcher policy/environment tests; diagnostic initialize/config/read/connected inventory and unchanged counts | CLI 0.165.0 `/status` and verbose `/mcp` for the two successful sessions; probe plus three worktree tools, no real mail tools | Substantiated for CLI. Original desktop priority was explicitly changed by the user to CLI; desktop isolation remains untested and does not block CLI |
-| 2. Native proof of concept without COM: one human decision per synthetic call and adequate presentation | Existing standalone synthetic `outlook_send_draft`, append-only execution events, no `confirm` field, no queue/retry | Protocol test with forbidden mail/COM imports; schema rejection; no startup/restart replay; four experimental tests now pass including unsafe-policy preflight refusal | Acceptance, cancellation, identical arguments requiring a new dialog, post-resume and fresh-session restart cancellation | Partial only. Substantive changes/consecutive sequence, presentation, remembered-permission restrictions and original pending-dialog lifecycle cases need evidence |
+| 2. Native proof of concept without COM: one human decision per synthetic call and adequate presentation | Existing standalone synthetic `outlook_send_draft`, append-only execution events, no `confirm` field, no queue/retry | Protocol test with forbidden mail/COM imports; schema rejection; no startup/restart replay; four experimental tests now pass including unsafe-policy preflight refusal | Acceptance, cancellation, identical arguments requiring a new dialog, post-resume/restart cancellation, substantive changes and consecutive native decisions | Partial only. Body truncation in the card is documented; remembered-permission restrictions and original pending-dialog lifecycle cases remain limited or pending |
 | 3. Bind native decision to a concrete real draft revision while preserving backend guarantees | Not implemented; production contracts still require `confirmation_phrase` | Existing backend tests and historical validation provide a baseline, not native integration tests | No real draft or send observations in this experiment | Proposed only in integration plan; original gate prohibits progressing without adequate stage-2 acceptance |
 | 4. Viability report distinguishing documented/observed/pending per client | Existing RESULTS and this retrospective; scope and evidence sources recorded | Source/commit/log comparisons; hashes and counts independently checked | Operator-reported CLI dialogs explicitly separated from server events | Update after pending manual tests; never extrapolate to desktop or B |
 | 5. Later review, promotion and return to stable | Stable unchanged; experiment can be closed without reconfiguring stable; local milestone commit | Local stable HEAD/status and exact experimental commit scope checked | Experimental session restored and a new CLI session opened; no stable reinstall or mail operation | No merge, push, PR, package publication or real test. Any real testing/promotion requires a separate later decision |
@@ -93,7 +93,7 @@ inconclusive and is not counted as a native rejection. A pasted status from the
 coordination session with real Outlook/Gmail tools was correctly excluded from
 experimental-isolation evidence. No real mail tool was invoked.
 
-The last independently rechecked baseline is exactly one execution, solely for
+The milestone baseline was exactly one execution, solely for
 `reject-001`, ID `3f9ce11a-e606-45c9-a78a-fd4b9196d8e7`. Execution-log SHA-256:
 `0efbaede839170142233035c9d382557314c4a88aafd2e925525d1e48473e6da`.
 Dialog appearance and decisions are operator observations; the event log only
@@ -101,6 +101,17 @@ proves which handler executions were recorded. Replayed historical terminal
 output is not a new execution. Initial three-call counts were checked afterwards,
 not independently sampled at each individual dialog. Later lifecycle cases have
 separate pre-call and post-result checkpoints.
+
+During this review the priority pair was completed: the operator accepted
+`content-sequence-001` and cancelled `content-sequence-002`, with no retries.
+The log now has exactly two events, the original one and first-case ID
+`99240151-10e4-435a-8b13-17395e5a12b3`. The first argument object matches the fixture
+in every field, including revision, changed subject/body and attachment labels;
+the second has zero events. Both native decisions are operator observations.
+The first dialog offered Allow/Cancel without a visible remember option, showed
+both attachment labels, and truncated the body; the full body was visible in the
+pending call above. This proves neither full-body display inside the card nor a
+global prohibition on remembered permissions. Pending-close is still outstanding.
 
 ## Automatic checks: what they do and do not establish
 
@@ -172,5 +183,6 @@ must be disclosed, not described as solved by native approval.
 Stage 1 is substantiated for the identified CLI setup. Stage 2 is not yet closed
 under the original mandatory matrix. [CLOSURE_CHECKS.md](CLOSURE_CHECKS.md) selects
 the immediate nonredundant pair and states the remaining hard gates. Prepared
-fixtures and instructions are not executed tests. Integration planning is safe
+fixtures alone are not evidence; the priority pair now has the operator and log
+evidence described above. Integration planning is safe
 to review now, but implementing native real-send behavior remains gated.
