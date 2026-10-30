@@ -12,6 +12,9 @@ from mcp.client.stdio import stdio_client
 
 ROOT = Path(__file__).resolve().parent
 
+def phase(name):
+    print(f'probe phase: {name}', flush=True)
+
 
 class ProbeTests(unittest.TestCase):
     def test_protocol_validation_and_execution(self):
@@ -36,23 +39,29 @@ runpy.run_path(sys.argv[0], run_name='__main__')
 """, str(ROOT / "probe.py"), "--events", str(events)],
                 cwd=str(ROOT),
             )
+            phase('spawn')
             async with stdio_client(params) as (reader, writer):
                 async with ClientSession(reader, writer) as session:
+                    phase('initialize')
                     await session.initialize()
+                    phase('list_tools')
                     catalog = await session.list_tools()
                     self.assertEqual([t.name for t in catalog.tools], ["outlook_send_draft"])
                     self.assertFalse(events.exists())
                     arguments = dict(case_id="protocol-only", revision=1,
                                      subject="Synthetic subject", body="Invented content",
                                      attachments=["fictional.txt"])
+                    phase('invalid_arguments')
                     invalid = await session.call_tool(
                         "outlook_send_draft", {**arguments, "confirm": True})
                     self.assertTrue(invalid.isError)
                     self.assertFalse(events.exists())
+                    phase('unknown_tool')
                     unknown = await session.call_tool("send_mail", arguments)
                     self.assertTrue(unknown.isError)
                     self.assertFalse(events.exists())
                     for _ in range(2):
+                        phase('synthetic_call')
                         result = await session.call_tool("outlook_send_draft", arguments)
                         self.assertFalse(result.isError)
                     records = [json.loads(line) for line in events.read_text().splitlines()]
@@ -60,11 +69,14 @@ runpy.run_path(sys.argv[0], run_name='__main__')
                     self.assertNotEqual(records[0]["execution_id"], records[1]["execution_id"])
                     self.assertEqual(records[0]["arguments"], arguments)
                     self.assertEqual(records[0]["snapshot_hash"], records[1]["snapshot_hash"])
+                    phase('first_teardown')
+            phase('restart')
             # Restarting without calls must not replay previous executions.
             async with stdio_client(params) as (reader, writer):
                 async with ClientSession(reader, writer) as session:
                     await session.initialize()
             self.assertEqual(len(events.read_text().splitlines()), 2)
+            phase('complete')
 
 
 if __name__ == "__main__":
