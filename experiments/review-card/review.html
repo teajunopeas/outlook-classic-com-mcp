@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revisión de correo — simulador</title>
+<style>
+body{font:15px system-ui;margin:20px;color:#182435;background:#fafbfd}main{max-width:800px;margin:auto}h1{font-size:22px}.notice{padding:12px;background:#fff1cd;border-radius:8px}dt{font-weight:650;margin-top:12px}dd{margin:4px 0;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;border:1px solid #d4dce6;padding:14px;border-radius:8px}button{padding:12px;border:0;border-radius:8px;background:#155fc0;color:white;font:inherit}button:disabled{opacity:.5}#status{padding:10px 0}label{display:block;margin:18px 0}
+</style>
+<main><h1>Revisar mensaje</h1><p class="notice">SIMULACIÓN: no hay ninguna cuenta conectada y no se enviará correo.</p>
+<dl id="fields"></dl><h2>Cuerpo completo</h2><pre id="body">Esperando datos del cliente…</pre><h2>Adjuntos ficticios</h2><ul id="attachments"></ul>
+<label><input id="checked" type="checkbox" disabled> He revisado el contenido de esta simulación</label>
+<button id="submit" disabled>Simular envío</button><p id="status" role="status">Sin conexión al anfitrión. El botón permanece deshabilitado.</p></main>
+<script>
+'use strict';
+let serial=0,hostReady=false,preview=null,busy=false,timer=null;
+const pending=new Map(),$=id=>document.getElementById(id);
+function request(method,params){return new Promise((resolve,reject)=>{const id=++serial;const timeout=setTimeout(()=>{pending.delete(id);reject(new Error('El cliente no respondió; no se reintentará.'));},15000);pending.set(id,{resolve,reject,timeout});window.parent.postMessage({jsonrpc:'2.0',id,method,params},'*');});}
+function enabled(){ $('submit').disabled=!hostReady||!preview||busy||!$('checked').checked||Date.now()>=preview.expires_at_unix*1000; }
+function render(data){
+ preview=null;busy=false;$('checked').checked=false;$('checked').disabled=true;clearInterval(timer);$('fields').replaceChildren();$('attachments').replaceChildren();
+ if(!data||data.review?.simulation!==true||!data.reservation||!data.snapshot_hash||!Number.isFinite(data.expires_at_unix)){enabled();return;}
+ preview=data;const r=data.review;
+ for(const [label,value] of [['De',r.sender],['Para',(r.to||[]).join(', ')],['CC',(r.cc||[]).join(', ')],['CCO',(r.bcc||[]).join(', ')],['Asunto',r.subject],['Versión',r.revision]]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;$('fields').append(dt,dd);}
+ $('body').textContent=r.body;
+ for(const a of r.attachments||[]){const li=document.createElement('li');li.textContent=`${a.name} · ${a.size} bytes · SHA-256 ${a.sha256}`;$('attachments').append(li);}
+ $('checked').disabled=false;$('status').textContent='Revisión sintética disponible. El permiso nativo del cliente se verifica por separado.';timer=setInterval(()=>{enabled();if(Date.now()>=data.expires_at_unix*1000)$('status').textContent='Revisión caducada. Solicita una nueva.';},1000);enabled();
+}
+window.addEventListener('message',ev=>{
+ if(ev.source!==window.parent||window.parent===window)return;
+ const m=ev.data;if(!m||m.jsonrpc!=='2.0')return;
+ if(m.id!==undefined&&!m.method){const p=pending.get(m.id);if(!p)return;clearTimeout(p.timeout);pending.delete(m.id);m.error?p.reject(new Error(m.error.message)):p.resolve(m.result);}
+ if(m.method==='ui/notifications/tool-result')render(m.params?.structuredContent);
+});
+$('checked').addEventListener('change',enabled);
+$('submit').addEventListener('click',async()=>{
+ if($('submit').disabled)return;busy=true;enabled();const reviewed=preview;
+ try{const out=await request('tools/call',{name:'review_simulate_submit',arguments:{reservation:reviewed.reservation,snapshot_hash:reviewed.snapshot_hash}});if(out?.isError)throw new Error('El cliente rechazó la operación simulada.');$('status').textContent='Intento simulado registrado. No se ha enviado correo.';}
+ catch(e){$('status').textContent=e.message+' Solicita una nueva revisión si procede.';}
+ // Remain disabled after success, cancellation or uncertainty; never retry.
+});
+(async()=>{if(window.parent===window)return;try{await request('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'outlook-review-simulator',version:'0.1.0'},appCapabilities:{}});hostReady=true;window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/initialized',params:{}},'*');enabled();}catch(e){$('status').textContent=e.message;}})();
+</script></html>
